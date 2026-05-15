@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0abea07f944ae7242a514c097481abb9, type: 3}
+  m_Name: Demo Level Definiton
+  m_EditorClassIdentifier: 
+  levelId: demo_001
+  levelName: "\u6D4B\u8BD5\u5173\u5361 001"
+  description: "\u6D4B\u8BD5\u5173\u5361 001"
+  playerUnits:
+  - unitId: soldier_basic
+    campId: 1
+    coord: {x: 5, y: 5}
+  - unitId: soldier_basic
+    campId: 1
+    coord: {x: 3, y: 5}
+  - unitId: soldier_basic
+    campId: 1
+    coord: {x: 8, y: 8}
+  - unitId: MBT_basic
+    campId: 1
+    coord: {x: 9, y: 3}
+  - unitId: MBT_basic
+    campId: 1
+    coord: {x: 3, y: 3}
+  - unitId: MBT_basic
+    campId: 1
+    coord: {x: 17, y: 3}
+  enemyUnits:
+  - unitId: soldier_basic
+    campId: 2
+    coord: {x: 5, y: 7}
+  - unitId: soldier_basic
+    campId: 2
+    coord: {x: 11, y: 13}
+  - unitId: MBT_basic
+    campId: 2
+    coord: {x: 13, y: 13}
+  - unitId: MBT_basic
+    campId: 2
+    coord: {x: 15, y: 13}
+  - unitId: MBT_basic
+    campId: 2
+    coord: {x: 19, y: 13}
+  - unitId: MBT_basic
+    campId: 2
+    coord: {x: 14, y: 22}
+  - unitId: soldier_basic
+    campId: 2
+    coord: {x: 3, y: 7}
+  - unitId: MBT_basic
+    campId: 2
+    coord: {x: 4, y: 8}
+  - unitId: MBT_basic
+    campId: 2
+    coord: {x: 20, y: 16}
+  - unitId: MBT_basic
+    campId: 2
+    coord: {x: 18, y: 16}

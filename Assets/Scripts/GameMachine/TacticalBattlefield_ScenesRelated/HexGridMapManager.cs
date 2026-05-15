@@ -8,11 +8,6 @@ public class HexGridMapManager : MonoBehaviour
 {
     public static HexGridMapManager Instance;
 
-    void Awake()
-    {
-        Instance = this;
-    }
-
     [Header("Tile Prefabs")]
     public GameObject defaultPrefab; // 默认地块
     public GameObject outBoundsPrefab; // 界外地块
@@ -25,17 +20,17 @@ public class HexGridMapManager : MonoBehaviour
 
     public static Dictionary<Vector2, HexGridTile_Base> playableTiles;
     public static Dictionary<Vector2, HexGridTile_Base> outBoundsTiles;
+    public bool IsInitialized { get; private set; }
 
-    public UnitBase currSelectedUnit;
-
-    public GameObject unitInfoDisplayer;
-
-
-    void Start()
+    private void Awake()
     {
+        Instance = this;
+    }
+
+    private void Start()
+    {
+        IsInitialized = false;
         GenerateHexGrid(50, 50, 6);
-        unitInfoDisplayer.SetActive(false);
-        unitInfoDisplayer.GetComponent<SelectedUnitInfo>().ResetInfo();
 
         if (GetComponent<HexGridInputController>() == null)
         {
@@ -47,140 +42,6 @@ public class HexGridMapManager : MonoBehaviour
     {
         // 玩家输入已迁移至 HexGridInputController
     }
-
-
-    void SpawnTestUnit(string name, int camp, Vector2 coord)
-    {
-        GameObject testUnit = Instantiate(
-            UnitsManager.Instance.testSoldier,
-            Vector3.zero,
-            Quaternion.identity
-        );
-
-        testUnit.GetComponent<UnitBase>().Init(name, camp, GetHexTileFromCoordinates(coord));
-    }
-
-
-    #region 操作输入处理
-    public void HandleMouseInput()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            HexGridTile_Base clickTile = GetHexTileFromMouseClick();
-
-            if (clickTile != null)
-            {
-                if (currSelectedUnit != null)
-                {
-                    if (clickTile.currUnit == null)
-                    {
-                        currSelectedUnit.TryMoveTo(clickTile);
-                    }
-                    else
-                    {
-
-                        if (!CampManager.Instance.isCampEnemy(currSelectedUnit.unitCampID, clickTile.currUnit.unitCampID))
-                        {
-                            if (currSelectedUnit.unitOperationState == UnitOperationState.Selected)
-                            {
-                                SelectUnit(clickTile.currUnit);
-                            }
-                        }
-                        else
-                        {
-                            // 攻击判断
-                            if (currSelectedUnit.IsTileInAttackRange(clickTile))
-                            {
-                                PreBattleUIManager.Instance.ShowBattleUI(currSelectedUnit, clickTile.currUnit);
-                            }
-                        }
-
-
-
-                    }
-                }
-                else
-                {
-                    if (clickTile.currUnit != null)
-                    {
-                        currSelectedUnit = clickTile.currUnit;
-                        unitInfoDisplayer.GetComponent<SelectedUnitInfo>().currSelectedUnit = clickTile.currUnit;
-
-                        currSelectedUnit.OnSelect();
-                        unitInfoDisplayer.SetActive(true);
-
-                        Debug.Log("Clicked selected unit: " + currSelectedUnit.unitName);
-                    }
-                    else
-                    {
-                        Debug.Log("Clicked tile position: " + clickTile.GetCoordinates());
-                    }
-                }
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            if (currSelectedUnit != null)
-            {
-                currSelectedUnit.ClearMoveRange();
-                currSelectedUnit.OnAttackSelecting();
-            }
-        }
-
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (PreBattleUIManager.Instance != null)
-            {
-                PreBattleUIManager.Instance.HideBattleUI();
-            }
-            if (currSelectedUnit != null)
-            {
-                if (currSelectedUnit.unitOperationState == UnitOperationState.Selected)
-                {
-                    currSelectedUnit.DisSelect();
-                    currSelectedUnit = null;
-                    unitInfoDisplayer.GetComponent<SelectedUnitInfo>().currSelectedUnit = null;
-                    unitInfoDisplayer.SetActive(false);
-                }
-                else if (currSelectedUnit.unitOperationState == UnitOperationState.AttackSelecting)
-                {
-                    currSelectedUnit.DisAttackSelecting();
-                }
-
-            }
-        }
-    }
-    
-    public void SelectUnit(UnitBase unit)
-    {
-        if (currSelectedUnit != null)
-        {
-            currSelectedUnit.DisSelect();
-        }
-
-        currSelectedUnit = unit;
-
-        unitInfoDisplayer.GetComponent<SelectedUnitInfo>().currSelectedUnit = unit;
-        currSelectedUnit.OnSelect();
-
-        unitInfoDisplayer.SetActive(true);
-    }
-
-    public void HandleTestSpawn()
-    {
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            SpawnTestUnit("test1", 1, new Vector2(5, 5));
-        }
-
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            SpawnTestUnit("test2", 2, new Vector2(5, 5));
-        }
-    }
-
-    #endregion
 
     #region 地图生成
     void GenerateHexGrid(int gridSizeX, int gridSizeY, int outOfBoundsRange)
@@ -245,6 +106,8 @@ public class HexGridMapManager : MonoBehaviour
                 }
             }
         }
+
+        IsInitialized = true;
     }
     
     HexGridTileType GetRandomTileType()

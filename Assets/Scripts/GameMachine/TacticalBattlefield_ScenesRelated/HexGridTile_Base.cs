@@ -90,24 +90,36 @@ public class HexGridTile_Base : MonoBehaviour
     {
         fogState = state;
 
-        switch (state)
+        if (fogOverlay != null)
         {
-            case FogState.Unexplored:
-                fogOverlay.SetActive(true);
-                fogOverlay.GetComponent<Renderer>().material.color = new Color(0.1f, 0.1f, 0.1f, 1f);
-                MoveCostText.gameObject.SetActive(false);
-                break;
+            Renderer renderer = fogOverlay.GetComponent<Renderer>();
 
-            case FogState.Explored:
-                fogOverlay.SetActive(true);
-                fogOverlay.GetComponent<Renderer>().material.color = new Color(0.1f, 0.1f, 0.1f, 0.3f);
-                MoveCostText.gameObject.SetActive(true);
-                break;
+            switch (state)
+            {
+                case FogState.Unexplored:
+                    fogOverlay.SetActive(true);
 
-            case FogState.Visible:
-                fogOverlay.SetActive(false);
-                MoveCostText.gameObject.SetActive(true);
-                break;
+                    if (renderer != null)
+                        renderer.material.color = new Color(0.1f, 0.1f, 0.1f, 1f);
+                    break;
+
+                case FogState.Explored:
+                    fogOverlay.SetActive(true);
+
+                    if (renderer != null)
+                        renderer.material.color = new Color(0.1f, 0.1f, 0.1f, 0.3f);
+                    break;
+
+                case FogState.Visible:
+                    fogOverlay.SetActive(false);
+                    break;
+            }
+        }
+
+        if (MoveCostText != null)
+        {
+            bool showMoveCost = state != FogState.Unexplored;
+            MoveCostText.gameObject.SetActive(showMoveCost);
         }
     }
     #endregion

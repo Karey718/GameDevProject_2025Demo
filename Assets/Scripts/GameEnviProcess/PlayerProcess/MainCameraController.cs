@@ -6,7 +6,7 @@ public class MainCameraController : MonoBehaviour
 {
     public static MainCameraController Instance;
 
-    private bool inForce = false;
+    // private bool inForce = false;
 
     private float maxX = 100f;
     private float minX = -100f;
